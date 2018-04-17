@@ -16,3 +16,12 @@ class MyUser(AbstractUser):
     class Meta:
         verbose_name = "Użytkownik"
         verbose_name_plural = "Użytkownicy"
+
+
+class Photo(models.Model):
+    title = models.CharField(max_length=255)
+    path = models.ImageField(upload_to='images')
+    creation_date = models.DateTimeField(auto_now_add=True)
+    user = models.ForeignKey(MyUser, related_name='photos')
+
+
