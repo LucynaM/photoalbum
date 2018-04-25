@@ -18,9 +18,11 @@ from django.contrib import admin
 
 from django.conf import settings
 from django.conf.urls.static import static
-from photoalbum.views import MainView
+from photoalbum.views import MainView, SignUpView
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^', MainView.as_view(), name='test'),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    url(r'^$', MainView.as_view(), name='main'),
+    url(r'^signup/$', SignUpView.as_view(), name='signup'),
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
+              + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

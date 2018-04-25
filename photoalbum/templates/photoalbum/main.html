@@ -1,10 +1,11 @@
 {% extends './base.html' %}
+{% load staticfiles %}
 {% load bootstrap3 %}
-{% load static %}
+
 
 {% block content %}
 
-    <form action="" method="post" enctype="multipart/form-data">
+    <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
         <input type="submit" name="submit" value="Upload">
@@ -12,8 +13,9 @@
     
     {% for photo in photos %}
         <figure>
-            <img class="card-body" src="{{ photo.path.url }}" alt="" width="250">
+            <img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}" >
             <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
         </figure>
     {% endfor %}
+    
 {% endblock content %}
