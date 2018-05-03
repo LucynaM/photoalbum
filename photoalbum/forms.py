@@ -6,7 +6,7 @@ from .models import Photo, MyUser
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
-        fields = '__all__'
+        exclude = ['likes', ]
 
 
 class SignUpForm(forms.ModelForm):
@@ -24,3 +24,7 @@ class SignUpForm(forms.ModelForm):
         if password1 != password2:
             raise ValidationError
         return self.cleaned_data
+
+class LogInForm(forms.Form):
+    email = forms.EmailField()
+    password = forms.CharField(widget=forms.PasswordInput())

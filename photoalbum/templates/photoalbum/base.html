@@ -9,18 +9,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
     <link rel="stylesheet" href="{% static 'photoalbum/css/style.css' %}">
 </head>
 <body>
-{% block header %}{% endblock header %}
 <div class="container">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-3">
+            <div class="page-header">
+            {% block header %}{% endblock header %}
+            </div>
+        </div>
+    </div>
+
     <div class="row">
         <div class="col-sm-6 col-sm-offset-3">
             {% block content %} {% endblock content %}
         </div>
     </div>
 </div>
-
-{% block footer %}{% endblock footer %}
+    <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
+    <script src="{% static 'photoalbum/js/app.js' %}"></script>
+    {% block javascript %}{% endblock javascript %}
 </body>
 </html>

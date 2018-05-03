@@ -23,5 +23,6 @@ class Photo(models.Model):
     path = models.ImageField(upload_to='images')
     creation_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(MyUser, related_name='photos')
+    likes = models.IntegerField(default=0)
 
 

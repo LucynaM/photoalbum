@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect
 from django.views import View
+from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
+from django.http import JsonResponse, HttpResponseBadRequest
 
 from .models import Photo, MyUser
-from .forms import PhotoForm, SignUpForm
+from .forms import PhotoForm, SignUpForm, LogInForm
 
 # Create your views here.
 
@@ -48,3 +50,56 @@ class SignUpView(View):
             'form': form,
         }
         return render(request, 'photoalbum/signup.html', ctx)
+
+class LogInView(View):
+    def get(self, request):
+        form = LogInForm()
+        ctx = {
+            'form': form,
+        }
+        return render(request, 'photoalbum/login.html', ctx)
+
+    def post(self, request):
+        form = LogInForm(request.POST)
+        msg = ""
+        if form.is_valid():
+            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                if request.GET.get('next'):
+                    return redirect(request.GET.get('next'))
+                else:
+                    return redirect('main')
+            else:
+                msg = "Błędny użytkownik lub hasło"
+        ctx = {
+            'msg': msg,
+            'form': form,
+        }
+        return render(request, 'photoalbum/login.html', ctx)
+
+
+class UserDetails(View):
+    def get(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        user_photos = user.photos.all().order_by('creation_date')
+
+
+def ajax_counter(request):
+    if request.method == "GET":
+        try:
+            counter = int(request.GET['counter'])
+            photo_id = int(request.GET['photo_id'])
+            photo = Photo.objects.get(pk=photo_id)
+            photo.likes += counter
+            photo.save()
+            data = {
+                'id': photo.id,
+                'photo_likes': photo.likes,
+            }
+            return JsonResponse(data)
+        except Exception as e:
+            print(e)
+
+    else:
+        return HttpResponseBadRequest()

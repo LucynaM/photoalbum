@@ -2,6 +2,9 @@
 {% load staticfiles %}
 {% load bootstrap3 %}
 
+{% block header %}
+    <h2>Photos</h2>
+{% endblock header %}
 
 {% block content %}
 
@@ -12,9 +15,11 @@
     </form>
     
     {% for photo in photos %}
-        <figure>
+        <figure id="{{ photo.id }}">
             <img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}" >
             <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
+            <i class="fas fa-thumbs-up like"></i>
+            <p class="likes-count">{{ photo.likes }}</p>
         </figure>
     {% endfor %}
     
