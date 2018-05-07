@@ -4,15 +4,24 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
 from django.http import JsonResponse, HttpResponseBadRequest
 
-from .models import Photo, MyUser
+from .models import Photo, MyUser, Likes
 from .forms import PhotoForm, SignUpForm, LogInForm
 
 # Create your views here.
 
 class MainView(View):
+    def get_all_photos(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        photos = Photo.objects.all().order_by('creation_date')
+        for photo in photos:
+            if photo.likes.filter(user=user).count() > 0:
+                photo.user_already_liked = True
+        return photos
+
     def get(self, request):
         form = PhotoForm()
-        photos = Photo.objects.all().order_by('creation_date')
+        #photos = Photo.objects.all().order_by('creation_date')
+        photos = self.get_all_photos(request)
         ctx = {
             'form': form,
             'photos': photos,
@@ -20,10 +29,12 @@ class MainView(View):
         return render(request, 'photoalbum/main.html', ctx)
 
     def post(self, request):
+        print(request.user.id)
+        user = MyUser.objects.get(pk=request.user.id)
         form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            form.save()
-        photos = Photo.objects.all().order_by('creation_date')
+            Photo.objects.create(user=user, **form.cleaned_data)
+        photos = self.get_all_photos(request)
         ctx = {
             'form': form,
             'photos': photos,
@@ -79,6 +90,12 @@ class LogInView(View):
         return render(request, 'photoalbum/login.html', ctx)
 
 
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+
+
 class UserDetails(View):
     def get(self, request):
         user = MyUser.objects.get(pk=request.user.id)
@@ -91,11 +108,18 @@ def ajax_counter(request):
             counter = int(request.GET['counter'])
             photo_id = int(request.GET['photo_id'])
             photo = Photo.objects.get(pk=photo_id)
-            photo.likes += counter
-            photo.save()
+            user_id = int(request.GET['user'])
+            user = MyUser.objects.get(pk=user_id)
+            if counter == 1:
+                Likes.objects.create(photo=photo, user=user)
+            else:
+                like = Likes.objects.get(photo=photo, user=user)
+                like.delete()
+            photo_likes = photo.likes.count()
+            print(photo_likes)
             data = {
                 'id': photo.id,
-                'photo_likes': photo.likes,
+                'photo_likes': photo_likes,
             }
             return JsonResponse(data)
         except Exception as e:

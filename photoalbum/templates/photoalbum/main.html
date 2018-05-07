@@ -7,6 +7,8 @@
 {% endblock header %}
 
 {% block content %}
+    <h4 id="user_{{ user.id }}">Witaj {{ user }}</h4>
+    <a href="{% url 'logout' %}">Wyloguj</a>
 
     <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
@@ -18,9 +20,18 @@
         <figure id="{{ photo.id }}">
             <img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}" >
             <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
-            <i class="fas fa-thumbs-up like"></i>
-            <p class="likes-count">{{ photo.likes }}</p>
+            <div class="likes-indication">
+            {% if photo.user_already_liked %}
+                <i class="fas fa-thumbs-down dislike"></i>
+                <p>lubisz to zdjęcie</p>
+            {% else %}
+                <i class="fas fa-thumbs-up like"></i>
+            {% endif %}
+            </div>
+
+            <p class="likes-count">Liczba polubień: {{ photo.likes.count }}</p>
         </figure>
     {% endfor %}
+
     
 {% endblock content %}

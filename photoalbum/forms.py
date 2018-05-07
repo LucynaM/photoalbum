@@ -6,7 +6,7 @@ from .models import Photo, MyUser
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
-        exclude = ['likes', ]
+        exclude = ['user', ]
 
 
 class SignUpForm(forms.ModelForm):

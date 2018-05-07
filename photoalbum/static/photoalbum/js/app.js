@@ -19,17 +19,18 @@ $(document).ready(function() {
     // ajax - stop
 
     // click - start
-    function clickHandler(element) {
-        element.on('click', function(e) {
+    function clickHandler() {
+        $('.likes-indication').on('click', 'svg', function(e) {
             e.preventDefault();
 
-            var data = {
-                photo_id: $(this).parent().attr('id')
+            const data = {
+                photo_id: $(this).closest('figure').attr('id'),
+                user: $('h4').attr('id').slice(5)
             };
 
-            if (element.hasClass('like')) {
+            if ($(this).hasClass('like')) {
                 data.counter = 1
-            } else if (element.hasClass('dislike')) {
+            } else {
                 data.counter = -1
             }
 
@@ -40,12 +41,18 @@ $(document).ready(function() {
 
     // change likes count - start
     function likesCount(r) {
-        $('#'+ r.id + ' .likes-count').html(r.photo_likes);
+
+        $('figure#'+ r.id + ' .likes-count').html("Liczba polubień: " + r.photo_likes);
+
+        const likesIndication = $('figure#'+ r.id + ' .likes-indication');
+        if (likesIndication.children().hasClass('like')) {
+            likesIndication.html('<i class="fas fa-thumbs-down"></i><p>lubisz to zdjęcie</p>')
+        } else {
+            likesIndication.html('<i class="fas fa-thumbs-up"></i>')
+        }
     }
     // change likes count - stop
 
-    clickHandler($('.like'));
-    clickHandler($('.dislike'));
-
+    clickHandler();
 
 });
