@@ -1,0 +1,33 @@
+{% extends './base.html' %}
+
+{% load bootstrap3 %}
+
+{% block header %}
+    <h2>{{ photo.title }}</h2>
+{% endblock header %}
+
+{% block content %}
+    <figure id="{{ photo.id }}">
+        <img src="{{ photo.path.url }}" alt="{{ photo.title }}">
+        <figcaption>autor: {{ photo.user }}</figcaption>
+    </figure>
+
+    {% if comments %}
+        <p>Komentarze:</p>
+        <ul>
+        {% for comment in comments %}
+            <li>{{ user }}: {{ comment.content }}</li>
+        {% empty %}
+            <li>Nikt jeszcze nie skomentował zdjęcia</li>
+        {% endfor %}
+        </ul>
+
+    {% endif %}
+
+    <form action="" method="post">
+    {% csrf_token %}
+    {% bootstrap_form form %}
+        <input type="submit" value="dodaj komentarz">
+
+    </form>
+{% endblock content %}

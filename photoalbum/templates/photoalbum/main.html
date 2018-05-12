@@ -18,7 +18,7 @@
     
     {% for photo in photos %}
         <figure id="{{ photo.id }}">
-            <img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}" >
+            <a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}"></a>
             <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
             <div class="likes-indication">
             {% if photo.user_already_liked %}

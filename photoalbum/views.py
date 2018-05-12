@@ -4,8 +4,8 @@ from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
 from django.http import JsonResponse, HttpResponseBadRequest
 
-from .models import Photo, MyUser, Likes
-from .forms import PhotoForm, SignUpForm, LogInForm
+from .models import Photo, MyUser, Likes, Comment
+from .forms import PhotoForm, SignUpForm, LogInForm, CommentForm
 
 # Create your views here.
 
@@ -20,7 +20,6 @@ class MainView(View):
 
     def get(self, request):
         form = PhotoForm()
-        #photos = Photo.objects.all().order_by('creation_date')
         photos = self.get_all_photos(request)
         ctx = {
             'form': form,
@@ -100,7 +99,37 @@ class UserDetails(View):
     def get(self, request):
         user = MyUser.objects.get(pk=request.user.id)
         user_photos = user.photos.all().order_by('creation_date')
+        ctx = {
+            'user_photos': user_photos,
+        }
+        return render(request, 'photoalbum/user_photos.html', ctx)
 
+
+class PhotoDetails(View):
+    def get(self, request, photo_id):
+        photo = Photo.objects.get(pk=photo_id)
+        form = CommentForm()
+        comments = photo.comments.all()
+        ctx = {
+            'photo': photo,
+            'form': form,
+            'comments': comments,
+        }
+        return render(request, 'photoalbum/photo_details.html', ctx)
+
+    def post(self, request, photo_id):
+        photo = Photo.objects.get(pk=photo_id)
+        user = MyUser.objects.get(pk=request.user.id)
+        form = CommentForm(request.POST)
+        if form.is_valid():
+            Comment.objects.create(user=user, photo=photo, **form.cleaned_data)
+        comments = photo.comments.all()
+        ctx = {
+            'photo': photo,
+            'form': form,
+            'comments': comments,
+        }
+        return render(request, 'photoalbum/photo_details.html', ctx)
 
 def ajax_counter(request):
     if request.method == "GET":

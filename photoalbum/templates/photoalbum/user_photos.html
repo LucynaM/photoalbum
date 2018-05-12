@@ -1,0 +1,16 @@
+{% extends './base.html' %}
+
+{% load bootstrap3 %}
+
+{% block header %}
+    <h2>{{ user }}</h2>
+{% endblock header %}
+
+{% block content %}
+    {% for photo in user_photos %}
+        <figure id="{{ photo.id }}">
+            <a href="{% url 'photo_details' photo.id %}"><img src="{{ photo.path.url }}" alt="{{ photo.title }}"></a>
+            <figcaption>{{ photo.title }}</figcaption>
+        </figure>
+    {% endfor %}
+{% endblock content %}

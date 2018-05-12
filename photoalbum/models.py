@@ -29,3 +29,9 @@ class Likes(models.Model):
     user = models.ForeignKey(MyUser, related_name="likes")
     photo = models.ForeignKey(Photo, related_name="likes")
 
+
+class Comment(models.Model):
+    content = models.CharField(max_length=255)
+    user = models.ForeignKey(MyUser, related_name='comments')
+    photo = models.ForeignKey(Photo, related_name='comments')
+    creation_date = models.DateTimeField(auto_now_add=True)

@@ -46,9 +46,9 @@ $(document).ready(function() {
 
         const likesIndication = $('figure#'+ r.id + ' .likes-indication');
         if (likesIndication.children().hasClass('like')) {
-            likesIndication.html('<i class="fas fa-thumbs-down"></i><p>lubisz to zdjęcie</p>')
+            likesIndication.html('<i class="fas fa-thumbs-down dislike"></i><p>lubisz to zdjęcie</p>')
         } else {
-            likesIndication.html('<i class="fas fa-thumbs-up"></i>')
+            likesIndication.html('<i class="fas fa-thumbs-up like"></i>')
         }
     }
     // change likes count - stop

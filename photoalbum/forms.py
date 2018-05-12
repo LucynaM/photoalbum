@@ -1,12 +1,16 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from .models import Photo, MyUser
+from .models import Photo, MyUser, Comment
 
 
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
         exclude = ['user', ]
+        labels = {
+            'path': '',
+            'title': '',
+        }
 
 
 class SignUpForm(forms.ModelForm):
@@ -28,3 +32,10 @@ class SignUpForm(forms.ModelForm):
 class LogInForm(forms.Form):
     email = forms.EmailField()
     password = forms.CharField(widget=forms.PasswordInput())
+
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        exclude = ['user', 'photo']
+        labels = {'content': ''}
