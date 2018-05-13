@@ -21,7 +21,7 @@ from django.conf.urls.static import static
 from photoalbum.views import MainView, SignUpView, LogInView, logout_user, ajax_counter, UserDetails, PhotoDetails, EditUser
 
 urlpatterns = [
-    url(r'^admin/', admin.site.urls),
+    url(r'^admin/', admin.site.urls,),
     url(r'^$', MainView.as_view(), name='main'),
     url(r'^signup/$', SignUpView.as_view(), name='signup'),
     url(r'^login/$', LogInView.as_view(), name='login'),

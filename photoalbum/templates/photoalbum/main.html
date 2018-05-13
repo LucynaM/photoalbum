@@ -3,19 +3,18 @@
 {% load bootstrap3 %}
 
 {% block header %}
-    <h2>Photos</h2>
+    <h2>Zdjęcia</h2>
 {% endblock header %}
 
 {% block content %}
-    <h4 id="user_{{ user.id }}">Witaj {{ user }}</h4>
-    <a href="{% url 'logout' %}">Wyloguj</a>
 
+    <h4>Dodaj zdjęcie</h4>
     <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
         <input type="submit" name="submit" value="Upload">
     </form>
-    
+
     {% for photo in photos %}
         <figure id="{{ photo.id }}">
             <a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}"></a>

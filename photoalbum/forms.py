@@ -6,7 +6,7 @@ from .models import Photo, MyUser, Comment
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
-        exclude = ['user', ]
+        exclude = ['user', 'blocked']
         labels = {
             'path': '',
             'title': '',
@@ -45,5 +45,5 @@ class LogInForm(forms.Form):
 class CommentForm(forms.ModelForm):
     class Meta:
         model = Comment
-        exclude = ['user', 'photo']
+        exclude = ['user', 'photo', 'blocked']
         labels = {'content': ''}

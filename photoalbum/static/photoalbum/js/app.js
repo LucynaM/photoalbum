@@ -25,7 +25,7 @@ $(document).ready(function() {
 
             const data = {
                 photo_id: $(this).closest('figure').attr('id'),
-                user: $('h4').attr('id').slice(5)
+                user: $('.user-details').eq(0).attr('id').slice(5)
             };
 
             if ($(this).hasClass('like')) {
