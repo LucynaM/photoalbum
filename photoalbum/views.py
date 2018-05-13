@@ -1,7 +1,8 @@
 from django.shortcuts import render, redirect
 from django.views import View
-from django.views.decorators.csrf import csrf_exempt
 from django.contrib.auth import login, logout, authenticate
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 
 from .models import Photo, MyUser, Likes, Comment
@@ -9,7 +10,9 @@ from .forms import PhotoForm, SignUpForm, LogInForm, CommentForm
 
 # Create your views here.
 
-class MainView(View):
+
+class MainView(LoginRequiredMixin, View):
+    """Main page dispalying all photos available in service"""
     def get_all_photos(self, request):
         user = MyUser.objects.get(pk=request.user.id)
         photos = Photo.objects.all().order_by('creation_date')
@@ -42,6 +45,7 @@ class MainView(View):
 
 
 class SignUpView(View):
+    """Registration page"""
     def get(self, request):
         form = SignUpForm()
         ctx = {
@@ -62,7 +66,8 @@ class SignUpView(View):
         return render(request, 'photoalbum/signup.html', ctx)
 
 
-class EditUser(View):
+class EditUser(LoginRequiredMixin, View):
+    """User details to change"""
 
     def get(self, request):
         user = MyUser.objects.get(pk=request.user.id)
@@ -121,7 +126,8 @@ def logout_user(request):
 
 
 
-class UserDetails(View):
+class UserDetails(LoginRequiredMixin, View):
+    """User page displaying all his photos"""
     def get(self, request):
         user = MyUser.objects.get(pk=request.user.id)
         user_photos = user.photos.all().order_by('creation_date')
@@ -131,7 +137,8 @@ class UserDetails(View):
         return render(request, 'photoalbum/user_photos.html', ctx)
 
 
-class PhotoDetails(View):
+class PhotoDetails(LoginRequiredMixin, View):
+    """Single photo details with comments handling"""
     def get(self, request, photo_id):
         photo = Photo.objects.get(pk=photo_id)
         form = CommentForm()
@@ -157,6 +164,8 @@ class PhotoDetails(View):
         }
         return render(request, 'photoalbum/photo_details.html', ctx)
 
+
+# update likes count on user click
 def ajax_counter(request):
     if request.method == "GET":
         try:
@@ -171,7 +180,6 @@ def ajax_counter(request):
                 like = Likes.objects.get(photo=photo, user=user)
                 like.delete()
             photo_likes = photo.likes.count()
-            print(photo_likes)
             data = {
                 'id': photo.id,
                 'photo_likes': photo_likes,

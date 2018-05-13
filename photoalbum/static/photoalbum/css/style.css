@@ -5,3 +5,11 @@ img {
 figure {
     margin: 50px 0px;
 }
+
+li {
+    list-style: none;
+}
+
+svg {
+    cursor: pointer;
+}

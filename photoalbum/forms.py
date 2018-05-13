@@ -11,6 +11,14 @@ class PhotoForm(forms.ModelForm):
             'path': '',
             'title': '',
         }
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'placeholder': 'podaj tytuł',
+            })
+        }
+        help_texts = {
+            'path': '',
+        }
 
 
 class SignUpForm(forms.ModelForm):
