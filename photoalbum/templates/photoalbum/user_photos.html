@@ -11,6 +11,8 @@
         <figure id="{{ photo.id }}">
             <a href="{% url 'photo_details' photo.id %}"><img src="{{ photo.path.url }}" alt="{{ photo.title }}"></a>
             <figcaption>{{ photo.title }}</figcaption>
+            <p class="likes-count">Liczba polubień: {{ photo.likes.count }}</p>
+            <p class="comments-count">Liczba komentarzy: {{ photo.comments.count }}</p>
         </figure>
     {% endfor %}
 {% endblock content %}

@@ -61,6 +61,32 @@ class SignUpView(View):
         }
         return render(request, 'photoalbum/signup.html', ctx)
 
+
+class EditUser(View):
+
+    def get(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        form = SignUpForm(instance=user)
+        ctx = {
+            'form': form,
+        }
+        return render(request, 'photoalbum/edit_user.html', ctx)
+
+    def post(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        form = SignUpForm(request.POST, instance=user)
+        if form.is_valid():
+            user.username = form.cleaned_data['email']
+            user.email = form.cleaned_data['email']
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            logout(request)
+            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+        return redirect('main')
+
+
 class LogInView(View):
     def get(self, request):
         form = LogInForm()

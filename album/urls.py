@@ -18,7 +18,7 @@ from django.contrib import admin
 
 from django.conf import settings
 from django.conf.urls.static import static
-from photoalbum.views import MainView, SignUpView, LogInView, logout_user, ajax_counter, UserDetails, PhotoDetails
+from photoalbum.views import MainView, SignUpView, LogInView, logout_user, ajax_counter, UserDetails, PhotoDetails, EditUser
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
@@ -29,5 +29,6 @@ urlpatterns = [
     url(r'^ajax_counter/$', ajax_counter, name='ajax_counter'),
     url(r'^user_photo/$', UserDetails.as_view(), name='user_photo'),
     url(r'^photo_details/(?P<photo_id>(\d)+)/$', PhotoDetails.as_view(), name='photo_details'),
+    url(r'^edit_user/$', EditUser.as_view(), name='edit_user'),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT) \
               + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
