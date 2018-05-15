@@ -55,4 +55,14 @@ $(document).ready(function() {
 
     clickHandler();
 
+    // set images wrapper height for proper hover
+    function setImgWrapperSize () {
+        $('.img-wrapper').each(function() {
+            const imgHeight = $(this).children().children().height();
+            const wrapperHeight = $(this).height(imgHeight);
+        })
+    }
+
+    setImgWrapperSize()
+
 });

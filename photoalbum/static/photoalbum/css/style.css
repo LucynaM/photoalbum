@@ -1,9 +1,32 @@
+body {
+    margin-top: 70px;
+}
+
+.img-wrapper {
+    overflow: hidden;
+}
+
 img {
     width: 100%;
-    height: auto;
+    /*height: auto;*/
+    transition: transform 1s;
 }
+
+
+img:hover {
+    transform: scale(1.1, 1.1);
+
+}
+
 figure {
     margin: 50px 0px;
+    background-color: #f8f8f8;
+    text-align: center;
+    padding: 10%;
+}
+
+figcaption {
+    padding-top: 7%;
 }
 
 li {
@@ -13,3 +36,18 @@ li {
 svg {
     cursor: pointer;
 }
+
+.likes-indication svg,
+.likes-indication p {
+    display: inline;
+}
+
+.likes-indication p {
+    padding: 5px;
+}
+
+form {
+    background-color: #f8f8f8;
+    padding: 10%;
+}
+

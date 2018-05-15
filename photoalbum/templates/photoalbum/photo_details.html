@@ -8,7 +8,7 @@
 
 {% block content %}
     <figure id="{{ photo.id }}">
-        <img src="{{ photo.path.url }}" alt="{{ photo.title }}">
+        <div class="img-wrapper"><img src="{{ photo.path.url }}" alt="{{ photo.title }}"></div>
         <figcaption>autor: {{ photo.user }}</figcaption>
     </figure>
 
