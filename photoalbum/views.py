@@ -31,7 +31,6 @@ class MainView(LoginRequiredMixin, View):
         return render(request, 'photoalbum/main.html', ctx)
 
     def post(self, request):
-        print(request.user.id)
         user = MyUser.objects.get(pk=request.user.id)
         form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
