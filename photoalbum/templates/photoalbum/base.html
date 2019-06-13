@@ -9,7 +9,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     {% bootstrap_css %}
     {% bootstrap_javascript %}
-    <script defer src="https://use.fontawesome.com/releases/v5.0.9/js/all.js" integrity="sha384-8iPTk2s/jMVj81dnzb/iFR2sdA7u06vHJyyLlAd4snFpCl/SnyUjRrbdJsw1pGIl" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700&display=swap&subset=latin-ext" rel="stylesheet">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" >
+
     <link rel="stylesheet" href="{% static 'photoalbum/css/style.css' %}">
 </head>
 <body>
@@ -40,7 +42,12 @@
                 <li class="user-details" id="user_{{ user.id }}"><a href="">Witaj {{ user }}</a></li>
                 <li><a href="{% url 'logout' %}">Wyloguj</a></li>
                   {% else %}
-                <li><a href="{% url 'signup' %}">Zarejestruj</a></li>
+                  {% if request.path == '/login/' %}
+                  <li><a href="{% url 'signup' %}">Zarejestruj się</a></li>
+                  {% endif %}
+                  {% if request.path == '/signup/' %}
+                <li><a href="{% url 'login' %}">Zaloguj się</a></li>
+                  {% endif %}
                   {% endif %}
               </ul>
 

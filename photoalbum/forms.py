@@ -22,12 +22,16 @@ class PhotoForm(forms.ModelForm):
 
 
 class SignUpForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput())
-    password2 = forms.CharField(widget=forms.PasswordInput())
+    password = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password'}), label='',)
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'password2'}), label='',)
 
     class Meta:
         model = MyUser
         fields = ['email', 'password', 'password2']
+        labels = {'email': ''}
+        widgets = {
+            'email': forms.PasswordInput(attrs={'placeholder': 'email'}),
+        }
 
     def clean(self):
         password1 = self.cleaned_data['password']
@@ -38,8 +42,8 @@ class SignUpForm(forms.ModelForm):
         return self.cleaned_data
 
 class LogInForm(forms.Form):
-    email = forms.EmailField()
-    password = forms.CharField(widget=forms.PasswordInput())
+    email = forms.EmailField(label="", widget=forms.TextInput(attrs={'placeholder': 'email'}))
+    password = forms.CharField(label="", widget=forms.PasswordInput(attrs={'placeholder': 'password'}))
 
 
 class CommentForm(forms.ModelForm):
