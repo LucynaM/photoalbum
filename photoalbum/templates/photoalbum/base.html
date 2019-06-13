@@ -10,8 +10,7 @@
     {% bootstrap_css %}
     {% bootstrap_javascript %}
     <link href="https://fonts.googleapis.com/css?family=Fira+Sans:400,500,600,700&display=swap&subset=latin-ext" rel="stylesheet">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css" integrity="sha384-mzrmE5qonljUremFsqc01SB46JvROS7bZs3IO2EmfFsd15uHvIt+Y8vEf7N7fWAU" crossorigin="anonymous" >
-
+        <script src="https://kit.fontawesome.com/b50f919a85.js"></script>
     <link rel="stylesheet" href="{% static 'photoalbum/css/style.css' %}">
 </head>
 <body>
@@ -30,6 +29,7 @@
             <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
+                <li><a href="{% url 'main' %}"><i class="fas fa-home"></i></a></li>
                 <li><a href="{% url 'user_photo' %}">Twoje zdjęcia</a></li>
                 <li><a href="{% url 'edit_user' %}">Edytuj konto</a></li>
                 {% endif %}
