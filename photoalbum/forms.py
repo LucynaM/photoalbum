@@ -51,3 +51,6 @@ class CommentForm(forms.ModelForm):
         model = Comment
         exclude = ['user', 'photo', 'blocked']
         labels = {'content': ''}
+        widgets = {
+            'content': forms.TextInput(attrs={'placeholder': 'komentarz'}),
+        }

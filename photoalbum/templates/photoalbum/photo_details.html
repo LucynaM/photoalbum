@@ -2,32 +2,47 @@
 
 {% load bootstrap3 %}
 
-{% block header %}
-    <h2>{{ photo.title }}</h2>
-{% endblock header %}
-
 {% block content %}
-    <figure id="{{ photo.id }}">
-        <div class="img-wrapper"><img src="{{ photo.path.url }}" alt="{{ photo.title }}"></div>
-        <figcaption>autor: {{ photo.user }}</figcaption>
-    </figure>
 
+     <div class="col-sm-12 col-md-8 col-md-offset-2 img-container {{ photo.orientation }} photo-details">
+        <span class="photo-author">{{photo.user}}: </span><h2>{{ photo.title }}</h2>
+
+        <figure id="{{ photo.id }}">
+            <div class="img-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-8 {% endif %}"><img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}"></div>
+            <div class="info-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-4 {% endif %}">
+                <p class="likes-count">Polubienia ({{ photo.likes.count }})</p>
+                 <div class="likes-indication" data-url="{% url 'ajax_counter' %}">
+                {% if photo.user != user %}
+                    {% if photo.user_already_liked %}
+                        <span class="btn btn-primary empty-btn-primary dislike" data-type="change-likes" data-value="-1">nie lubię</span>
+                    {% else %}
+                        <span class="btn btn-primary empty-btn-primary like" data-type="change-likes" data-value="1">lubię</span>
+                    {% endif %}
+                {% endif %}
+                </div>
+            </div>
+        </figure>
+    </div>
     {% if comments %}
-        <p>Komentarze:</p>
-        <ul>
-        {% for comment in comments %}
-            <li>{{ user }}: {{ comment.content }}</li>
-        {% empty %}
-            <li>Nikt jeszcze nie skomentował zdjęcia</li>
-        {% endfor %}
-        </ul>
-
+     <div class="col-sm-12 col-md-8 col-md-offset-2 comments-container">
+         <div class="comments">
+            <p>Komentarze:</p>
+            <ul>
+            {% for comment in comments %}
+                <li>{{ user }}: {{ comment.content }}</li>
+            {% empty %}
+                <li>Nikt jeszcze nie skomentował zdjęcia</li>
+            {% endfor %}
+            </ul>
+         </div>
+    </div>
     {% endif %}
+    <div class="col-sm-12 col-md-8 col-md-offset-2 comments-form-container">
+        <form action="" method="post">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+            <input class="btn btn-primary black-btn-primary" type="submit" value="dodaj">
 
-    <form action="" method="post">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-        <input type="submit" value="dodaj komentarz">
-
-    </form>
+        </form>
+    </div>
 {% endblock content %}

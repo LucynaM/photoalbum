@@ -2,17 +2,18 @@
 
 {% load bootstrap3 %}
 
-{% block header %}
-    <h2>{{ user }}</h2>
-{% endblock header %}
-
 {% block content %}
     {% for photo in user_photos %}
+    <div class="col-sm-12 col-md-6 img-container {{ photo.orientation }}">
         <figure id="{{ photo.id }}">
-            <div class="img-wrapper"><a href="{% url 'photo_details' photo.id %}"><img src="{{ photo.path.url }}" alt="{{ photo.title }}"></a></div>
-            <figcaption>{{ photo.title }}</figcaption>
-            <p class="likes-count">Liczba polubień: {{ photo.likes.count }}</p>
-            <p class="comments-count">Liczba komentarzy: {{ photo.comments.count }}</p>
+            <div class="img-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-8 {% endif %}"><a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path_to_resized.url }}" alt="{{ photo.title }}"></a></div>
+            <div class="info-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-4 {% endif %}">
+                <figcaption>"{{ photo.title }}"</figcaption>
+                <p class="likes-count">Polubienia ({{ photo.likes.count }})</p>
+                <p class="comments-count">Komentarze ({{ photo.comments.count }})</p>
+            </div>
         </figure>
+
+    </div>
     {% endfor %}
 {% endblock content %}

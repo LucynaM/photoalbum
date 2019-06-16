@@ -5,38 +5,34 @@
 
 
 {% block content %}
-
-
-    <h3>Dodaj zdjęcie</h3>
-    <form action="" method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    {% bootstrap_form form %}
-        <input class="btn btn-primary" type="submit" name="submit" value="Upload">
-    </form>
+    {% if user.is_authenticated %}
+    <div class="col-sm-12 ">
+        <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% bootstrap_form form %}
+            <input class="btn btn-primary black-btn-primary" type="submit" name="submit" value="Upload">
+        </form>
+    </div>
+    {% endif %}
 
     {% for photo in photos %}
-
-    <div class="col-sm-12 col-md-6 col-lg-4 {{ photo.orientation }}">
+    <div class="col-sm-12 col-md-6 img-container {{ photo.orientation }}">
         <figure id="{{ photo.id }}">
-            <div class="img-wrapper"><a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path_to_resized.url }}" alt="{{ photo.title }}"></a></div>
-            <div class="info-wrapper">
-                <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
+            <div class="img-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-8 {% endif %}"><a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path_to_resized.url }}" alt="{{ photo.title }}"></a></div>
+            <div class="info-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-4 {% endif %}">
+                <figcaption><span class="photo-author">{{ photo.user }}:</span> "{{ photo.title }}"</figcaption>
+                <p class="likes-count">Polubienia ({{ photo.likes.count }})</p>
                 <div class="likes-indication" data-url="{% url 'ajax_counter' %}">
                 {% if photo.user != user %}
                     {% if photo.user_already_liked %}
-                        <p>lubisz już to zdjęcie, chcesz zmienić zdanie?</p><br />
-                        <i class="fas fa-heart-broken dislike"></i>
+                        <span class="btn btn-primary empty-btn-primary dislike" data-type="change-likes" data-value="-1">nie lubię</span>
                     {% else %}
-                        <p>jeszcze nie lubisz tego zdjęcia, chcesz zmienić zdanie?</p><br />
-                        <i class="fas fa-heart like"></i>
+                        <span class="btn btn-primary empty-btn-primary like" data-type="change-likes" data-value="1">lubię</span>
                     {% endif %}
                 {% endif %}
                 </div>
-
-                <p class="likes-count">Liczba polubień: {{ photo.likes.count }}</p>
             </div>
         </figure>
-
     </div>
     {% endfor %}
 

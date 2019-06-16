@@ -1,53 +1,116 @@
 body {
-    margin-top: 70px;
+    background: lightgrey;
+}
+.navbar {
+    margin-bottom: 40px;
 }
 
+.img-container {
+    margin-top: 40px;
+}
 .img-wrapper {
-    overflow: hidden;
+    display: inline-block;
+    padding-left:0;
+    padding-right:0;
+    z-index: 1;
+}
+
+.info-wrapper {
+    display: inline-block;
+    padding: 10px 10px 10px 10px;
+    z-index: 1;
+    background: #fff;
+}
+
+.photo-details.landscape .info-wrapper {
+    padding-left: 10%;
+}
+
+.info-wrapper figcaption {
+    font-weight: 600;
+    margin: 20px 0;
+}
+
+
+figure {
+    background-color: #fff;
+    z-index: 10;
 }
 
 img {
     width: 100%;
-    /*height: auto;*/
-    transition: transform 1s;
+    height: 100%;
+    object-fit: cover;
 }
 
 
-img:hover {
-    transform: scale(1.1, 1.1);
-
+.btn.btn-primary.black-btn-primary {
+    background-color: black;
+    border-color: black;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 11px;
+    letter-spacing: 1px;
+    border-radius: 0;
 }
 
-figure {
-    margin: 50px 0px;
-    background-color: #f8f8f8;
-    text-align: center;
-    padding: 10%;
+.btn.btn-primary.empty-btn-primary {
+    background-color: transparent;
+    border-color: black;
+    text-transform: uppercase;
+    font-weight: 700;
+    font-size: 9px;
+    letter-spacing: 1px;
+    border-radius: 0;
+    color: black;
 }
-
-figcaption {
-    padding-top: 7%;
+ul {
+    padding-left: 0;
 }
 
 li {
     list-style: none;
 }
 
-svg {
-    cursor: pointer;
-}
-
-.likes-indication svg,
-.likes-indication p {
-    display: inline;
-}
-
-.likes-indication p {
-    padding: 5px;
+.comments {
+    background-color: #fff;
+    padding: 3% 10%;
 }
 
 form {
-    background-color: #f8f8f8;
-    padding: 10%;
+    background-color: #fff;
+    padding: 6% 10%;
+}
+
+.form-control {
+    border-radius: 0;
+}
+
+.likes-count {
+    margin: 20px 0;
+}
+.err-msg {
+    margin: 20px 0;
+}
+h2 {
+    color: #fff;
+    display: inline-block;
+}
+.photo-author {
+    text-transform: uppercase;
+    font-weight: 700;
+    letter-spacing: 1px;
+    font-size: 11px;
+}
+
+@media (max-width: 767px) {
+    .info-wrapper {
+        padding: 10px 10px 40px 10px;
+        background: #fff;
+    }
+    .photo-details.portrait .info-wrapper {
+        padding-left: 10%;
+    }
+
 }
 

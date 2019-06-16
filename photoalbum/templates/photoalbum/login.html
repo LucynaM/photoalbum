@@ -2,16 +2,15 @@
 
 {% load bootstrap3 %}
 
-{% block header %}
-    <h2>Zaloguj się</h2>
-{% endblock header %}
-
 {% block content %}
     <form action="" method="post">
     {% csrf_token %}
     {% bootstrap_form form %}
-        <input class="btn btn-primary" type="submit" name="submit" value="zaloguj się">
-
+        <input class="btn btn-primary black-btn-primary" type="submit" name="submit" value="zaloguj się">
+    {% if msg %}
+    <p class="err-msg"> {{ msg }}</p>
+    {% endif %}
     </form>
+
 
 {% endblock content %}
