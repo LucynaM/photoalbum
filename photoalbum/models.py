@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 
-# Create your models here.
+from django.core.files.uploadedfile import InMemoryUploadedFile
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 class MyUser(AbstractUser):
     email = models.EmailField(unique=True)
@@ -24,6 +27,8 @@ class MyUser(AbstractUser):
 class Photo(models.Model):
     title = models.CharField(max_length=255)
     path = models.ImageField(upload_to='images')
+    path_to_resized = models.ImageField(upload_to='resized')
+    orientation = models.CharField(max_length=10)
     creation_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(MyUser, related_name='photos', verbose_name='Użytkownik', on_delete=models.CASCADE)
     blocked = models.BooleanField(default=False)

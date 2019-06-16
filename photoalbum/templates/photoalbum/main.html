@@ -11,24 +11,33 @@
     <form action="" method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     {% bootstrap_form form %}
-        <input type="submit" name="submit" value="Upload">
+        <input class="btn btn-primary" type="submit" name="submit" value="Upload">
     </form>
 
     {% for photo in photos %}
-        <figure id="{{ photo.id }}">
-            <div class="img-wrapper"><a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}"></a></div>
-            <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
-            <div class="likes-indication">
-            {% if photo.user_already_liked %}
-                <i class="fas fa-thumbs-down dislike"></i>
-                <p>lubisz to zdjęcie</p>
-            {% else %}
-                <i class="fas fa-thumbs-up like"></i>
-            {% endif %}
-            </div>
 
-            <p class="likes-count">Liczba polubień: {{ photo.likes.count }}</p>
+    <div class="col-sm-12 col-md-6 col-lg-4 {{ photo.orientation }}">
+        <figure id="{{ photo.id }}">
+            <div class="img-wrapper"><a href="{% url 'photo_details' photo.id %}"><img class="card-body" src="{{ photo.path_to_resized.url }}" alt="{{ photo.title }}"></a></div>
+            <div class="info-wrapper">
+                <figcaption>{{ photo.user }}: "{{ photo.title }}"</figcaption>
+                <div class="likes-indication" data-url="{% url 'ajax_counter' %}">
+                {% if photo.user != user %}
+                    {% if photo.user_already_liked %}
+                        <p>lubisz już to zdjęcie, chcesz zmienić zdanie?</p><br />
+                        <i class="fas fa-heart-broken dislike"></i>
+                    {% else %}
+                        <p>jeszcze nie lubisz tego zdjęcia, chcesz zmienić zdanie?</p><br />
+                        <i class="fas fa-heart like"></i>
+                    {% endif %}
+                {% endif %}
+                </div>
+
+                <p class="likes-count">Liczba polubień: {{ photo.likes.count }}</p>
+            </div>
         </figure>
+
+    </div>
     {% endfor %}
 
     

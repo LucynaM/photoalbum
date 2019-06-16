@@ -6,7 +6,7 @@ from .models import Photo, MyUser, Comment
 class PhotoForm(forms.ModelForm):
     class Meta:
         model = Photo
-        exclude = ['user', 'blocked']
+        exclude = ['user', 'blocked', 'orientation', 'path_to_resized']
         labels = {
             'path': '',
             'title': '',
@@ -30,7 +30,7 @@ class SignUpForm(forms.ModelForm):
         fields = ['email', 'password', 'password2']
         labels = {'email': ''}
         widgets = {
-            'email': forms.PasswordInput(attrs={'placeholder': 'email'}),
+            'email': forms.TextInput(attrs={'placeholder': 'email'}),
         }
 
     def clean(self):

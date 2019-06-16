@@ -4,16 +4,22 @@ from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
+from django.core.files.uploadedfile import InMemoryUploadedFile
 
 from .models import Photo, MyUser, Likes, Comment
 from .forms import PhotoForm, SignUpForm, LogInForm, CommentForm
+
+from PIL import Image
+from io import BytesIO
+from django.core.files.base import ContentFile
 
 # Create your views here.
 
 
 class MainView(LoginRequiredMixin, View):
     """Main page dispalying all photos available in service"""
-    def get_all_photos(self, request):
+    @staticmethod
+    def process_photos_with_likes(request):
         user = MyUser.objects.get(pk=request.user.id)
         photos = Photo.objects.all().order_by('creation_date')
         for photo in photos:
@@ -23,7 +29,8 @@ class MainView(LoginRequiredMixin, View):
 
     def get(self, request):
         form = PhotoForm()
-        photos = self.get_all_photos(request)
+        photos = self.process_photos_with_likes(request)
+
         ctx = {
             'form': form,
             'photos': photos,
@@ -34,8 +41,60 @@ class MainView(LoginRequiredMixin, View):
         user = MyUser.objects.get(pk=request.user.id)
         form = PhotoForm(request.POST, request.FILES)
         if form.is_valid():
-            Photo.objects.create(user=user, **form.cleaned_data)
-        photos = self.get_all_photos(request)
+
+            photo = form.save(commit=False)
+            photo.user = user
+
+            # open uploaded file to process it
+            scr = Image.open(request.FILES['path'])
+            file_name = request.FILES['path'].name
+
+            #check original orientation settings
+            orientation = 274
+            try:
+                exif = scr._getexif()
+                if exif:
+                    exif = dict(exif.items())
+                    if exif[orientation] == 3:
+                        scr = scr.rotate(180, expand=True)
+                    elif exif[orientation] == 6:
+                        scr = scr.rotate(270, expand=True)
+                    elif exif[orientation] == 8:
+                        scr = scr.rotate(90, expand=True)
+            except:
+                # There is AttributeError: _getexif sometimes.
+                pass
+
+            #save orientation info and prepare resized img
+            w, h = scr.size
+            photo.orientation = 'landscape'
+            new_w, new_h = 900, int(h / (w / 900))
+
+            if w < h:
+                photo.orientation = 'portrait'
+                new_w, new_h = 600, int(h / (w / 600))
+
+            img_resized = scr.resize((new_w, new_h),Image.ANTIALIAS)
+
+            # save compressed/rotated/converted img in its original size as path
+            with BytesIO() as img_io:
+                scr.save(img_io, format='JPEG', optimize=True, quality=80)
+                pillow_image = ContentFile(img_io.getvalue())
+                photo.path = InMemoryUploadedFile(pillow_image, None, file_name, 'image/jpeg',
+                                                             pillow_image.tell, None)
+
+            # save compressed/rotated/converted and resized(!) img as path_to_resized
+            with BytesIO() as img_resized_io:
+                img_resized.save(img_resized_io, format='JPEG', optimize=True, quality=80)
+                pillow_image = ContentFile(img_resized_io.getvalue())
+                photo.path_to_resized = InMemoryUploadedFile(pillow_image, None, file_name, 'image/jpeg',
+                                                             pillow_image.tell, None)
+
+            photo.save()
+            scr.close()
+
+        form = PhotoForm()
+        photos = self.process_photos_with_likes(request)
         ctx = {
             'form': form,
             'photos': photos,
@@ -164,8 +223,9 @@ class PhotoDetails(LoginRequiredMixin, View):
         return render(request, 'photoalbum/photo_details.html', ctx)
 
 
-# update likes count on user click
+
 def ajax_counter(request):
+    """update likes count on user click"""
     if request.method == "GET":
         try:
             counter = int(request.GET['counter'])
