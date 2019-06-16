@@ -20,12 +20,12 @@ $(document).ready(function() {
 
     // click - start
     function clickHandler() {
-        $('.likes-indication').on('click', 'svg', function(e) {
+        $('.likes-indication').on('click', 'i.fas', function(e) {
             e.preventDefault();
-
+            const url = $(this).parent().data('url');
             const data = {
                 photo_id: $(this).closest('figure').attr('id'),
-                user: $('.user-details').eq(0).attr('id').slice(5)
+                user: $('.user-details').eq(0).attr('id').slice(5),
             };
 
             if ($(this).hasClass('like')) {
@@ -34,7 +34,7 @@ $(document).ready(function() {
                 data.counter = -1
             }
 
-            ajaxHandler('http://127.0.0.1:8000/ajax_counter/', data, 'GET')
+            ajaxHandler(url, data, 'GET')
         })
     }
     // click - stop
@@ -46,9 +46,9 @@ $(document).ready(function() {
 
         const likesIndication = $('figure#'+ r.id + ' .likes-indication');
         if (likesIndication.children().hasClass('like')) {
-            likesIndication.html('<i class="fas fa-thumbs-down dislike"></i><p>lubisz to zdjęcie</p>')
+            likesIndication.html('<p>lubisz już to zdjęcie, chcesz zmienić zdanie?</p><br /><i class="fas fa-heart-broken dislike"></i>')
         } else {
-            likesIndication.html('<i class="fas fa-thumbs-up like"></i>')
+            likesIndication.html('<p>jeszcze nie lubisz tego zdjęcia, chcesz zmienić zdanie?</p><br /> <i class="fas fa-heart like"></i>')
         }
     }
     // change likes count - stop
@@ -63,6 +63,6 @@ $(document).ready(function() {
         })
     }
 
-    setImgWrapperSize()
+    //  setImgWrapperSize()
 
 });
