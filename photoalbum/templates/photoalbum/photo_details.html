@@ -8,7 +8,7 @@
         <span class="photo-author">{{photo.user}}: </span><h2>{{ photo.title }}</h2>
 
         <figure id="{{ photo.id }}">
-            <div class="img-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-8 {% endif %}"><img class="card-body" src="{{ photo.path.url }}" alt="{{ photo.title }}"></div>
+            <div data-toggle="modal" data-target="#photo-modal" class="img-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-8 {% endif %}" data-src="{{ photo.path.url }}"><img class="card-body" src="{{ photo.path_to_resized.url }}" alt="{{ photo.title }}"></div>
             <div class="info-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-4 {% endif %}">
                 <p class="likes-count">Polubienia ({{ photo.likes.count }})</p>
                  <div class="likes-indication" data-url="{% url 'ajax_counter' %}">
@@ -44,5 +44,21 @@
             <input class="btn btn-primary black-btn-primary" type="submit" value="dodaj">
 
         </form>
+    </div>
+
+    <!-- Modal -->
+    <div class="modal fade" id="photo-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog" role="document">
+
+        <div class="modal-content">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+          <div class="modal-body">
+            <img class="card-body" src="" alt="{{ photo.title }}">
+          </div>
+
+        </div>
+      </div>
     </div>
 {% endblock content %}

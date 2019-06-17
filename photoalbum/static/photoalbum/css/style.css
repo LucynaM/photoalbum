@@ -15,6 +15,10 @@ body {
     z-index: 1;
 }
 
+.photo-details .img-wrapper {
+    cursor: pointer;
+}
+
 .info-wrapper {
     display: inline-block;
     padding: 10px 10px 10px 10px;
@@ -101,6 +105,26 @@ h2 {
     font-weight: 700;
     letter-spacing: 1px;
     font-size: 11px;
+}
+
+.modal-dialog {
+    width: 80%;
+}
+.modal-content {
+    border-radius: 0;
+}
+
+.modal-content button.close {
+    background: black;
+    opacity: 1;
+    color: white;
+    width: 30px;
+    height: 30px;
+    position: absolute;
+    right: -15px;
+    top: -15px;
+    font-size: 18px;
+    font-weight: 500;
 }
 
 @media (max-width: 767px) {

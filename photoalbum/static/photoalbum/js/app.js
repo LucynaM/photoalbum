@@ -20,19 +20,14 @@ $(document).ready(function() {
 
     // click - start
     function clickHandler() {
-        $('.likes-indication').on('click', 'i.fas', function(e) {
+        $('.likes-indication').on('click', '[data-type="change-likes"]', function(e) {
             e.preventDefault();
             const url = $(this).parent().data('url');
             const data = {
                 photo_id: $(this).closest('figure').attr('id'),
                 user: $('.user-details').eq(0).attr('id').slice(5),
             };
-
-            if ($(this).hasClass('like')) {
-                data.counter = 1
-            } else {
-                data.counter = -1
-            }
+            data.counter = $(this).data('value');
 
             ajaxHandler(url, data, 'GET')
         })
@@ -43,26 +38,60 @@ $(document).ready(function() {
     function likesCount(r) {
 
         $('figure#'+ r.id + ' .likes-count').html("Liczba polubień: " + r.photo_likes);
-
         const likesIndication = $('figure#'+ r.id + ' .likes-indication');
-        if (likesIndication.children().hasClass('like')) {
-            likesIndication.html('<p>lubisz już to zdjęcie, chcesz zmienić zdanie?</p><br /><i class="fas fa-heart-broken dislike"></i>')
+        if (likesIndication.children().data('value') == "1") {
+            likesIndication.html('<span class="btn btn-primary empty-btn-primary " data-type="change-likes" data-value="-1">nie lubię</span>')
         } else {
-            likesIndication.html('<p>jeszcze nie lubisz tego zdjęcia, chcesz zmienić zdanie?</p><br /> <i class="fas fa-heart like"></i>')
+            likesIndication.html('<span class="btn btn-primary empty-btn-primary " data-type="change-likes" data-value="1">lubię</span>')
         }
     }
     // change likes count - stop
 
     clickHandler();
 
-    // set images wrapper height for proper hover
-    function setImgWrapperSize () {
-        $('.img-wrapper').each(function() {
-            const imgHeight = $(this).children().children().height();
-            const wrapperHeight = $(this).height(imgHeight);
-        })
-    }
+    // set images box height and handle img orientation
+    function setImgSize () {
+        const windowWidthCondition = window.innerWidth < 768;
+        const containerWidth = $('.img-container').eq(0).width();
+        const detailedView = $('.img-container').hasClass('landscape photo-details');
 
-    //  setImgWrapperSize()
+        if (windowWidthCondition) {
+             $('.img-container figure').each(function() {
+                $(this).css({'height': ''});
+            });
+            $('.img-container.landscape .img-wrapper').each(function(){
+                $(this).css({'height': ''});
+            });
+
+            $('.img-container.portrait .img-wrapper').each(function(){
+                $(this).css({'height': ''});
+            });
+
+        } else {
+
+            if (!detailedView) {
+                $('.img-container figure').each(function() {
+                    $(this).height(containerWidth);
+                });
+
+                $('.img-container.landscape .img-wrapper').each(function(){
+                    $(this).css({'height': containerWidth * 2 / 3 + 'px'})
+                });
+
+                $('.img-container.portrait .img-wrapper').each(function(){
+                    $(this).css({'height': containerWidth + 'px'})
+                });
+            }
+        }
+    };
+
+    setImgSize();
+    $(window).resize(setImgSize);
+
+    $(document).on('show.bs.modal', '#photo-modal', function (e) {
+        console.log("działam");
+        var url  = $(e.relatedTarget).data('src');
+        $(this).find('.modal-body').html('<img class="card-body" src='+ url+'>');
+    });
 
 });
