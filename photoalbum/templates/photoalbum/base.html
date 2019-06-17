@@ -28,7 +28,7 @@
             <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
-                <li><a href="{% url 'main' %}"><i class="fas fa-home"></i></a></li>
+                <li><a href="{% url 'main' %}" title="wszystkie zdjęcia"><i class="fas fa-camera"></i></a></li>
                 <li><a href="{% url 'user_photo' %}">Twoje zdjęcia</a></li>
                 <li><a href="{% url 'edit_user' %}">Edytuj konto</a></li>
                 {% endif %}
