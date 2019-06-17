@@ -13,6 +13,8 @@ from PIL import Image
 from io import BytesIO
 from django.core.files.base import ContentFile
 
+from random import shuffle
+
 # Create your views here.
 
 
@@ -21,7 +23,7 @@ class MainView(LoginRequiredMixin, View):
     @staticmethod
     def process_photos_with_likes(request):
         user = MyUser.objects.get(pk=request.user.id)
-        photos = Photo.objects.all().order_by('creation_date')
+        photos = Photo.objects.all().order_by('-creation_date')
         for photo in photos:
             if photo.likes.filter(user=user).count() > 0:
                 photo.user_already_liked = True
@@ -102,103 +104,20 @@ class MainView(LoginRequiredMixin, View):
         return render(request, 'photoalbum/main.html', ctx)
 
 
-class SignUpView(View):
-    """Registration page"""
-    def get(self, request):
-        form = SignUpForm()
-        ctx = {
-            'form': form
-        }
-        return render(request, 'photoalbum/signup.html', ctx)
-
-    def post(self, request):
-        form = SignUpForm(request.POST)
-        if form.is_valid():
-            form.cleaned_data.pop('password2')
-            user = MyUser.objects.create_user(username=form.cleaned_data['email'], **form.cleaned_data)
-            login(request, user)
-            return redirect('main')
-        ctx = {
-            'form': form,
-        }
-        return render(request, 'photoalbum/signup.html', ctx)
-
-
-class EditUser(LoginRequiredMixin, View):
-    """User details to change"""
-
-    def get(self, request):
-        user = MyUser.objects.get(pk=request.user.id)
-        form = SignUpForm(instance=user)
-        ctx = {
-            'form': form,
-        }
-        return render(request, 'photoalbum/edit_user.html', ctx)
-
-    def post(self, request):
-        user = MyUser.objects.get(pk=request.user.id)
-        form = SignUpForm(request.POST, instance=user)
-        if form.is_valid():
-            user.username = form.cleaned_data['email']
-            user.email = form.cleaned_data['email']
-            user.set_password(form.cleaned_data['password'])
-            user.save()
-            logout(request)
-            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password'])
-            if user is not None:
-                login(request, user)
-        return redirect('main')
-
-
-class LogInView(View):
-    def get(self, request):
-        form = LogInForm()
-        ctx = {
-            'form': form,
-        }
-        return render(request, 'photoalbum/login.html', ctx)
-
-    def post(self, request):
-        form = LogInForm(request.POST)
-        msg = ""
-        if form.is_valid():
-            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password'])
-            if user is not None:
-                login(request, user)
-                if request.GET.get('next'):
-                    return redirect(request.GET.get('next'))
-                else:
-                    return redirect('main')
-            else:
-                msg = "Błędny użytkownik lub hasło"
-        ctx = {
-            'msg': msg,
-            'form': form,
-        }
-        return render(request, 'photoalbum/login.html', ctx)
-
-
-def logout_user(request):
-    logout(request)
-    return redirect('login')
-
-
-
-class UserDetails(LoginRequiredMixin, View):
-    """User page displaying all his photos"""
-    def get(self, request):
-        user = MyUser.objects.get(pk=request.user.id)
-        user_photos = user.photos.all().order_by('creation_date')
-        ctx = {
-            'user_photos': user_photos,
-        }
-        return render(request, 'photoalbum/user_photos.html', ctx)
-
 
 class PhotoDetails(LoginRequiredMixin, View):
     """Single photo details with comments handling"""
-    def get(self, request, photo_id):
+
+    @staticmethod
+    def process_photo_with_likes(request, photo_id):
+        user = MyUser.objects.get(pk=request.user.id)
         photo = Photo.objects.get(pk=photo_id)
+        if photo.likes.filter(user=user).count() > 0:
+            photo.user_already_liked = True
+        return photo
+
+    def get(self, request, photo_id):
+        photo = self.process_photo_with_likes(request, photo_id)
         form = CommentForm()
         comments = photo.comments.all()
         ctx = {
@@ -209,11 +128,13 @@ class PhotoDetails(LoginRequiredMixin, View):
         return render(request, 'photoalbum/photo_details.html', ctx)
 
     def post(self, request, photo_id):
-        photo = Photo.objects.get(pk=photo_id)
+
+        photo = self.process_photo_with_likes(request, photo_id)
         user = MyUser.objects.get(pk=request.user.id)
         form = CommentForm(request.POST)
         if form.is_valid():
             Comment.objects.create(user=user, photo=photo, **form.cleaned_data)
+            form = CommentForm()
         comments = photo.comments.all()
         ctx = {
             'photo': photo,
@@ -249,3 +170,121 @@ def ajax_counter(request):
 
     else:
         return HttpResponseBadRequest()
+
+class SignUpView(View):
+    """Registration page"""
+
+    @staticmethod
+    def get_random_result():
+        photos_all = Photo.objects.all()
+        random_list = list(range(photos_all.count()))
+        shuffle(random_list)
+        return (photos_all[i] for i in random_list[:2])
+
+    def get(self, request):
+        form = SignUpForm()
+        photos = self.get_random_result()
+        ctx = {
+            'form': form,
+            'photos': photos,
+        }
+        return render(request, 'photoalbum/signup.html', ctx)
+
+    def post(self, request):
+        form = SignUpForm(request.POST)
+        photos = self.get_random_result()
+        if form.is_valid():
+            form.cleaned_data.pop('password2')
+            user = MyUser.objects.create_user(username=form.cleaned_data['email'], **form.cleaned_data)
+            login(request, user)
+            return redirect('main')
+        ctx = {
+            'form': form,
+            'photos': photos,
+        }
+        return render(request, 'photoalbum/signup.html', ctx)
+
+
+class EditUser(LoginRequiredMixin, View):
+    """User details to change"""
+
+    def get(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        form = SignUpForm(instance=user)
+
+        ctx = {
+            'form': form,
+        }
+        return render(request, 'photoalbum/edit_user.html', ctx)
+
+    def post(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        form = SignUpForm(request.POST, instance=user)
+        if form.is_valid():
+            user.username = form.cleaned_data['email']
+            user.email = form.cleaned_data['email']
+            user.set_password(form.cleaned_data['password'])
+            user.save()
+            logout(request)
+            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+        return redirect('main')
+
+
+class LogInView(View):
+    @staticmethod
+    def get_random_result():
+        photos_all = Photo.objects.all()
+        random_list = list(range(photos_all.count()))
+        shuffle(random_list)
+        return (photos_all[i] for i in random_list[:2])
+
+
+    def get(self, request):
+        form = LogInForm()
+        photos = self.get_random_result()
+        ctx = {
+            'form': form,
+            'photos': photos,
+        }
+        return render(request, 'photoalbum/login.html', ctx)
+
+    def post(self, request):
+        form = LogInForm(request.POST)
+        photos = self.get_random_result()
+
+        msg = ""
+        if form.is_valid():
+            user = authenticate(email=form.cleaned_data['email'], password=form.cleaned_data['password'])
+            if user is not None:
+                login(request, user)
+                if request.GET.get('next'):
+                    return redirect(request.GET.get('next'))
+                else:
+                    return redirect('main')
+            else:
+                msg = "Błędny użytkownik lub hasło"
+        ctx = {
+            'msg': msg,
+            'form': form,
+            'photos': photos,
+        }
+        return render(request, 'photoalbum/login.html', ctx)
+
+
+def logout_user(request):
+    logout(request)
+    return redirect('login')
+
+
+
+class UserDetails(LoginRequiredMixin, View):
+    """User page displaying all his photos"""
+    def get(self, request):
+        user = MyUser.objects.get(pk=request.user.id)
+        user_photos = user.photos.all().order_by('-creation_date')
+        ctx = {
+            'user_photos': user_photos,
+        }
+        return render(request, 'photoalbum/user_photos.html', ctx)
