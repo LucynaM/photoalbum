@@ -176,7 +176,7 @@ class SignUpView(View):
 
     @staticmethod
     def get_random_result():
-        photos_all = Photo.objects.all()
+        photos_all = Photo.objects.filter(orientation='landscape')
         random_list = list(range(photos_all.count()))
         shuffle(random_list)
         return (photos_all[i] for i in random_list[:2])
@@ -235,7 +235,7 @@ class EditUser(LoginRequiredMixin, View):
 class LogInView(View):
     @staticmethod
     def get_random_result():
-        photos_all = Photo.objects.all()
+        photos_all = Photo.objects.filter(orientation='landscape')
         random_list = list(range(photos_all.count()))
         shuffle(random_list)
         return (photos_all[i] for i in random_list[:2])

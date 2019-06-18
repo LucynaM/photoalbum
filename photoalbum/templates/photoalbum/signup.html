@@ -15,7 +15,7 @@
     </form>
 
     {% for photo in photos %}
-    <div class="col-sm-12 col-md-6 img-container {{ photo.orientation }}">
+    <div class="col-sm-12 col-md-6 page-content {{ photo.orientation }}">
         <figure id="{{ photo.id }}">
             <div class="img-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-8 {% endif %}"><img class="card-body" src="{{ photo.path_to_resized.url }}" alt="{{ photo.title }}"></div>
             <div class="info-wrapper col-xs-12 {% if photo.orientation == 'portrait'%} col-sm-4 {% endif %}">

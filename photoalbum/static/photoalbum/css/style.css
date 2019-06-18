@@ -4,10 +4,14 @@ body {
 .navbar {
     margin-bottom: 40px;
 }
+.container {
+    margin-bottom: 40px;
+}
 
-.img-container {
+.img-container, .page-content {
     margin-top: 40px;
 }
+
 .img-wrapper {
     display: inline-block;
     padding-left:0;
