@@ -135,6 +135,11 @@ h2 {
     font-size: 18px;
     font-weight: 500;
 }
+.pagination .fas.fa-chevron-right,
+.pagination .fas.fa-chevron-left{
+    color: black;
+    font-size: 11px;
+}
 
 @media (max-width: 767px) {
     .info-wrapper {

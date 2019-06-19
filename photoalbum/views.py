@@ -2,20 +2,37 @@ from django.shortcuts import render, redirect
 from django.views import View
 from django.contrib.auth import login, logout, authenticate
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse, HttpResponseBadRequest
 from django.core.files.uploadedfile import InMemoryUploadedFile
+from django.core.files.base import ContentFile
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 
 from .models import Photo, MyUser, Likes, Comment
 from .forms import PhotoForm, SignUpForm, LogInForm, CommentForm
 
 from PIL import Image
 from io import BytesIO
-from django.core.files.base import ContentFile
+
 
 from random import shuffle
 
 # Create your views here.
+
+def make_photo_pages(request, photos):
+
+    paginator = Paginator(photos, 4)
+    page = request.GET.get('page', 1)
+
+    try:
+        result = paginator.page(page)
+    except PageNotAnInteger:
+        # If page is not an integer, deliver first page.
+        result = paginator.page(1)
+    except EmptyPage:
+        # If page is out of range (e.g. 9999), deliver last page of results.
+        result = paginator.page(paginator.num_pages)
+
+    return result
 
 
 class MainView(LoginRequiredMixin, View):
@@ -33,9 +50,12 @@ class MainView(LoginRequiredMixin, View):
         form = PhotoForm()
         photos = self.process_photos_with_likes(request)
 
+        #split photos into paginator pages
+        result = make_photo_pages(request, photos)
+
         ctx = {
             'form': form,
-            'photos': photos,
+            'photos': result,
         }
         return render(request, 'photoalbum/main.html', ctx)
 
@@ -94,12 +114,16 @@ class MainView(LoginRequiredMixin, View):
 
             photo.save()
             scr.close()
+            form = PhotoForm()
 
-        form = PhotoForm()
         photos = self.process_photos_with_likes(request)
+
+        # split photos into paginator pages
+        result = make_photo_pages(request, photos)
+
         ctx = {
             'form': form,
-            'photos': photos,
+            'photos': result,
         }
         return render(request, 'photoalbum/main.html', ctx)
 
@@ -284,7 +308,9 @@ class UserDetails(LoginRequiredMixin, View):
     def get(self, request):
         user = MyUser.objects.get(pk=request.user.id)
         user_photos = user.photos.all().order_by('-creation_date')
+        result = make_photo_pages(request, user_photos)
+
         ctx = {
-            'user_photos': user_photos,
+            'user_photos': result,
         }
         return render(request, 'photoalbum/user_photos.html', ctx)

@@ -16,4 +16,21 @@
 
     </div>
     {% endfor %}
+    {% if user_photos.paginator.num_pages > 1 %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if user_photos.has_previous %}
+                    <a href="?page={{ user_photos.previous_page_number }}"><i class="fas fa-chevron-left"></i></a>
+                {% endif %}
+
+                <span class="current">
+                    <span class="current-number">{{ user_photos.number }}</span> z {{ user_photos.paginator.num_pages }}
+                </span>
+
+                {% if user_photos.has_next %}
+                    <a href="?page={{ user_photos.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
 {% endblock content %}

@@ -35,6 +35,23 @@
         </figure>
     </div>
     {% endfor %}
+    {% if photos.paginator.num_pages > 1 %}
+        <div class="pagination">
+            <span class="step-links">
+                {% if photos.has_previous %}
+                    <a href="?page={{ photos.previous_page_number }}"><i class="fas fa-chevron-left"></i></a>
+                {% endif %}
+
+                <span class="current">
+                    <span class="current-number">{{ photos.number }}</span> z {{ photos.paginator.num_pages }}
+                </span>
+
+                {% if photos.has_next %}
+                    <a href="?page={{ photos.next_page_number }}"><i class="fas fa-chevron-right"></i></a>
+                {% endif %}
+            </span>
+        </div>
+    {% endif %}
 
     
 {% endblock content %}
