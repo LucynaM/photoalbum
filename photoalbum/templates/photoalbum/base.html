@@ -16,6 +16,7 @@
 
     <nav class="navbar navbar-default">
           <div class="container">
+              {% if user.is_authenticated %}
             <div class="navbar-header">
               <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
                 <span class="sr-only">Toggle navigation</span>
@@ -24,8 +25,9 @@
                 <span class="icon-bar"></span>
               </button>
             </div>
+              {% endif %}
 
-            <div id="navbar" class="navbar-collapse collapse">
+            <div id="navbar" class="{% if user.is_authenticated %} navbar-collapse collapse{% endif %}">
             <ul class="nav navbar-nav">
                 {% if user.is_authenticated %}
                 <li><a href="{% url 'main' %}" title="wszystkie zdjęcia"><i class="fas fa-camera"></i></a></li>
@@ -60,7 +62,8 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.1.0.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha384-aJ21OjlMXNL5UyIl/XNwTMqvzeRMZH2w8c5cRVpzpU8Y5bApTppSuUkhZXN0VxHd" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
     <script src="{% static 'photoalbum/js/app.js' %}"></script>
     {% block javascript %}{% endblock javascript %}
 </body>

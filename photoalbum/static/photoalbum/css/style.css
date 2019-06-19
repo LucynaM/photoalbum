@@ -5,6 +5,10 @@ body {
     margin-bottom: 40px;
 }
 
+.nav > li {
+    text-align: right;
+}
+
 .content-container {
     margin-bottom: 40px;
 }
