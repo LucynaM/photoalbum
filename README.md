@@ -1,4 +1,4 @@
-online photoalbum
+Online photo album presenting photos of users and allowing them to comment and rate photos of others.
 
     1. photo upload mechanism
     2. user registration panel and login/logout mechanism
@@ -14,4 +14,4 @@ online photoalbum
         * layout project (graphic)
         * layout deployment (frontend)
 
-Technologies: Python, Django, MySQL, JS, JQuery, ajax, CSS, HTML5, Bootstrap
+Technologies: Python, Django, MySQL, JS, JQuery, ajax, CSS, Bootstrap, HTML5
